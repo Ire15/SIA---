@@ -1,3 +1,4 @@
+import datetime
 from reportlab.pdfgen import canvas
 
 class EstadoResultados:
@@ -112,8 +113,10 @@ class EstadoResultados:
 				pListaEgresos.extend([i])
 			elif i[0][0] == '7':
 				pListaOtrosIngresos.extend([i])
+			elif i[0][0] == '8':
+				pListaOtrosGastos.extend([i])		
 			else:
-				pListaOtrosGastos.extend([i])
+				print(' ')
 
 def startEstadoResultados(NombreEmpresa, Matriz, pImpuestos, pDividendos, pUtilidadesRetenidasPeriodoAnterior):
 	ListaIngresos = []
@@ -131,6 +134,6 @@ def startEstadoResultados(NombreEmpresa, Matriz, pImpuestos, pDividendos, pUtili
 	
 	Fecha = datetime.date.today()
 	
-	EstadoResultados().generarEstadoResultados(Reporte, NombreEmpresa, Fecha, ListaIngresos, ListaEgresos, ListaOtrosIngresos, ListaOtrosGastos, pImpuestos, pDividendos, pUtilidadesRetenidasPeriodoAnterior)
+	EstadoResultados().generarEstadoResultados(Reporte, NombreEmpresa, str(Fecha), ListaIngresos, ListaEgresos, ListaOtrosIngresos, ListaOtrosGastos, pImpuestos, pDividendos, pUtilidadesRetenidasPeriodoAnterior)
 	Reporte.showPage()
 	Reporte.save()			

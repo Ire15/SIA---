@@ -37,15 +37,16 @@ class ReportesController:
 		self.Window = gui.get_object("Reportes")
 		self.Window.set_title("Reportes")
 		self.client = webClient
+		self.empresa = empresa
 		
 	def reporteComprobacion(self, button):
-		self.client.comprobacion()
-		
-	def reporteGeneral(self, button):
-		self.client.general()
+		self.client.comprobacion(self.empresa,1)
 	
 	def reporteResultados(self, button):
-		self.client.resultados()
+		self.client.comprobacion(self.empresa,2)
+
+	def reporteGeneral(self, button):
+		self.client.comprobacion(self.empresa,3)
 		
 def startReportesController(webClient, empresa):
 	ReportesController(webClient, empresa)
