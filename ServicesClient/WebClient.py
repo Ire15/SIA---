@@ -94,6 +94,9 @@ class WebClient:
 	def getEstadoPeriodo(self, empresa):
 		return self.client.service.getEstadoPeriodo(empresa)
 		
+	def getMonedasCuenta(self, cuenta, empresa):
+		return self.client.service.getMonedasCuenta(cuenta, empresa)
+		
 	##ELIMINAR
 	#def eliminarCuenta(self, codigo, empresa):
 		

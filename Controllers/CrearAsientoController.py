@@ -42,8 +42,9 @@ class CrearAsientoController:
 		self.vista = gui.get_object('treeview')
 		self.client = webClient
 		self.empresa = empresa
-		self.listaCuentas = Gtk.ListStore(str, float, float)
-		self.listaCuentas.append(["Activos", None, float(30000)])
+		self.listaCuentas = []
+		self.listaTreeview = Gtk.ListStore(str, float, float, float, float, float, float)
+		#self.listaCuentas.append(["Activos", None, float(30000)])
 		self.inicializarTreeView()
 		
 		
@@ -56,7 +57,10 @@ class CrearAsientoController:
 		
 	def crearAsiento(self, button):
 		self.Window.set_visible(False)
-		startAgregarCuentasController(self.client, self.empresa)
+		startAgregarCuentasController(self.client, self.empresa, self.listaCuentas)
+		for i in self.listaCuentas:
+			self.listaTreeview.append(i)
+		self.vista.show()
 		self.Window.set_visible(True)
 	
 	def inicializarTreeView(self):
@@ -67,12 +71,20 @@ class CrearAsientoController:
 		
 		render = Gtk.CellRendererText()
 		columna = Gtk.TreeViewColumn("Cuenta",render,text=0)
-		columna2 = Gtk.TreeViewColumn("Debe",render,text=1)
-		columna3 = Gtk.TreeViewColumn("Haber",render,text=2)
-		self.vista.set_model(self.listaCuentas)
+		columna2 = Gtk.TreeViewColumn("Debe Local",render,text=1)
+		columna3 = Gtk.TreeViewColumn("Haber Local",render,text=2)
+		columna4 = Gtk.TreeViewColumn("Debe Sistema",render,text=3)
+		columna5 = Gtk.TreeViewColumn("Haber Sistema",render,text=4)
+		columna6 = Gtk.TreeViewColumn("Debe Extranjero",render,text=5)
+		columna7 = Gtk.TreeViewColumn("Haber Extranjero",render,text=6)
+		self.vista.set_model(self.listaTreeview)
 		self.vista.append_column(columna)
 		self.vista.append_column(columna2)
 		self.vista.append_column(columna3)
+		self.vista.append_column(columna4)
+		self.vista.append_column(columna5)
+		self.vista.append_column(columna6)
+		self.vista.append_column(columna7)
 		self.vista.show()
 		
 	

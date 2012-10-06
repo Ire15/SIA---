@@ -25,11 +25,12 @@
 from gi.repository import Gtk
 
 class AgregarCuentasController:
-	def __init__(self, webClient, empresa):
+	def __init__(self, webClient, empresa, listaCuentas):
 		gui = Gtk.Builder()
 		gui.add_from_file("../GUI/AgregarCuentas.glade")
 		events = { "on_botAceptar_clicked": self.agregarCta,
 		"on_AgregarCuentas_delete_event": Gtk.main_quit,
+		"on_boxCuentas_changed": self.cargarMonedasCuenta
 		}
 		gui.connect_signals(events)
 		self.Window = gui.get_object("AgregarCuentas")
@@ -38,24 +39,34 @@ class AgregarCuentasController:
 		self.debe = gui.get_object("butDebe")
 		self.haber = gui.get_object("butHaber")
 		self.box = gui.get_object("boxCuentas")
+		self.box2 = gui.get_object("getMoneda")
 		self.empresa = empresa
-		listaCuentas = self.client.getCuentas
-		for i in listaCuentas:
+		self.client = webClient
+		self.listaCuentas = listaCuentas
+		self.listaCuentasPosibles = self.client.getCuentasNoTitulo(self.empresa)[0]
+		for i in self.listaCuentasPosibles:
 			self.box.append_text(i)
 		self.box.set_active(0)
 		self.client = webClient
 		
 	def agregarCta(self, button):
 		cuenta = self.box.get_active_text()
-		monto = self.monto.get_text()
+		monto = float(self.monto.get_text())
 		if self.debe.get_active():
-			debeHaber = ("debe")
-		elif self.haber.get_active():
-			debeHaber = ("haber")
-		self.client.agregarCuenta(cuenta, monto, debeHaber)
+			self.listaCuentas += [[cuenta, monto, 0.0, monto, 0.0, monto, 0.0]]
+		else:
+			self.listaCuentas += [[cuenta, 0.0, monto, 0.0, monto, 0.0, monto]]
+		Gtk.main_quit()
+		self.Window.hide()
+		
+	def cargarMonedasCuenta(self, entry):
+		listaMonedas = self.client.getMonedasCuenta(self.box.get_active_text(), self.empresa)
+		if listaMonedas:
+			for i in listaMonedas[0]:
+				self.box2.append_text(i)
 	
-def startAgregarCuentasController(webClient, empresa):
-	AgregarCuentasController(webClient, empresa)
+def startAgregarCuentasController(webClient, empresa, listaCuentas):
+	AgregarCuentasController(webClient, empresa, listaCuentas)
 	Gtk.main()
 
 

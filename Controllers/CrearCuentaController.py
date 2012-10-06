@@ -49,7 +49,7 @@ class CrearCuentaController:
 		self.columna1=Gtk.TreeViewColumn("Nombre",self.render,text=0)
 		self.vista.append_column(self.columna1)
 		listaMonedas = self.client.getMonedas(self.empresa)[0]
-		
+		self.monedasToAdd = []
 		Temp = []
 		for i in listaMonedas:
 			Temp.append(i)
@@ -69,7 +69,8 @@ class CrearCuentaController:
 		if(len(codigoAux) > 5 or len(codigoAux) < 2):
 			startErrorController("La cuenta no puede tener mas de 5 niveles o menos de 2")
 		self.client.crearCuenta(codigo, nombre, nombreExtranjero, titulo, self.empresa)
-		for i in self.monedasAsociadas:
+		for i in self.monedasToAdd:
+			print i
 			self.client.crearCuentaXMoneda(nombre, i, self.empresa)
 		
 		
@@ -77,6 +78,7 @@ class CrearCuentaController:
 	def agregarMoneda(self, button):
 		moneda = self.moneda.get_active_text()
 		self.monedasAsociadas.append([moneda])
+		self.monedasToAdd.append(moneda)
 		self.vista.set_model(self.monedasAsociadas)
 		self.vista.show()
 	
