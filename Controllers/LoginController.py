@@ -28,6 +28,7 @@ from gi.repository import Gtk
 from MainMenuController import *
 from EnterpriseController import *
 sys.path.append('../ServicesClient/')
+#sys.path.append('../ServicesClient/')
 from WebClient import *
 from Error import *
 

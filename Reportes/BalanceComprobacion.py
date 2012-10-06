@@ -1,3 +1,4 @@
+import datetime
 from reportlab.pdfgen import canvas
 
 class BalanceComprobacion:
@@ -48,8 +49,10 @@ class BalanceComprobacion:
 		for i in MatrizDatos:
 			if i[0][0] == '1':
 				pListaActivos.extend([i])
-			else:
+			elif i[0][0]=='2':
 				pListaPasivos.extend([i])
+			else:
+				print(' ')
 
 def startBalanceComprobacion(NombreEmpresa, Matriz):
 	ListaActivos = []
@@ -65,6 +68,6 @@ def startBalanceComprobacion(NombreEmpresa, Matriz):
 	
 	Fecha = datetime.date.today()
 	
-	BalanceComprobacion().generarBalanceComprobacion(Reporte, NombreEmpresa, Fecha, ListaActivos, ListaPasivos)
+	BalanceComprobacion().generarBalanceComprobacion(Reporte, NombreEmpresa, str(Fecha), ListaActivos, ListaPasivos)
 	Reporte.showPage()
 	Reporte.save()			

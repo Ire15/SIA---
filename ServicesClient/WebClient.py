@@ -22,10 +22,14 @@
 #  
 #  
 
-
+import sys
 import suds
 from hashlib import md5
 from suds.xsd.doctor import Import, ImportDoctor
+sys.path.append('../Reportes/')
+from BalanceComprobacion import*
+from EstadoResultados import*
+from BalanceGeneral import*
 
 class WebClient:
 	def __init__(self):
@@ -93,6 +97,29 @@ class WebClient:
 		
 	def getEstadoPeriodo(self, empresa):
 		return self.client.service.getEstadoPeriodo(empresa)
+	
+	def generarMatrizComprobacion(self, pListaDatos, pMatrizDatos):
+		Temp = []
+		for i in pListaDatos:
+			Temp.append(i)
+			if len(Temp) == 3:
+				pMatrizDatos.append([str(Temp[0]), str(Temp[1]), str(Temp[2])])
+				Temp = []
+		return pMatrizDatos
+	
+	def comprobacion(self, empresa, identificador):
+		MatrizDatos = []
+		ListaDatos = self.client.service.genReportes(empresa)[0]
+		self.generarMatrizComprobacion(ListaDatos, MatrizDatos)
+		
+		if identificador == 1:
+			startBalanceComprobacion(empresa, MatrizDatos)
+		elif identificador ==2:
+			startEstadoResultados(empresa, MatrizDatos,0,0,0)
+		else:
+			startBalanceGeneral(empresa, 0, MatrizDatos)
+			
+		
 		
 	##ELIMINAR
 	#def eliminarCuenta(self, codigo, empresa):
