@@ -442,7 +442,7 @@ class TestService(object):
 		db = _mysql.connect('localhost', 'root', 'sebasftw', empresa)
 		
 		#Obtener el monto de los gastos
-		db.query("select sum(saldo) from Cuenta where codigo like '6%' or codigo like '8%' or codigo like '5'")
+		db.query("select sum(saldo) from Cuenta where codigo like '6%' or codigo like '8%' or codigo like '5%'")
 		result = db.store_result()
 		row = result.fetch_row()
 		montoGastos = float(row[0]) 

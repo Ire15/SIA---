@@ -3,6 +3,8 @@
   <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkWindow" id="MonedaSistLocal">
     <property name="can_focus">False</property>
+    <property name="resizable">False</property>
+    <property name="window_position">center</property>
     <child>
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>
