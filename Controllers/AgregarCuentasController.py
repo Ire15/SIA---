@@ -52,10 +52,11 @@ class AgregarCuentasController:
 	def agregarCta(self, button):
 		cuenta = self.box.get_active_text()
 		monto = float(self.monto.get_text())
+		nomMoneda = self.box2.get_active_text()
 		if self.debe.get_active():
-			self.listaCuentas += [[cuenta, monto, 0.0, monto, 0.0, monto, 0.0]]
+			self.listaCuentas += [[cuenta, monto, 0.0, monto, 0.0, monto, 0.0, nomMoneda]]
 		else:
-			self.listaCuentas += [[cuenta, 0.0, monto, 0.0, monto, 0.0, monto]]
+			self.listaCuentas += [[cuenta, 0.0, monto, 0.0, monto, 0.0, monto, nomMoneda]]
 		Gtk.main_quit()
 		self.Window.hide()
 		

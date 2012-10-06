@@ -58,8 +58,8 @@ class WebClient:
 	def crearCuentaXMoneda(self, cuenta, moneda, empresa):
 		return self.client.service.crearCuentaXMoneda(cuenta, moneda, empresa)
 	
-	def crearAsiento(self, nuevoAsiento):
-		return self.client.service.crearAsiento(nuevoAsiento)
+	def crearAsiento(self, empresa, fechaCont, fechaDoc):
+		return self.client.service.crearAsiento(empresa, fechaCont, fechaDoc)
 	
 	def crearPeriodoC(self, empresa, estado, anio, mes, fechaI, fechaF):
 		return self.client.service.crearPeriodoC(empresa, estado, anio, mes, fechaI, fechaF)
@@ -69,6 +69,9 @@ class WebClient:
 		
 	def configurarMonedas(self, nombre, tipoVenta, tipoCambio, empresa):
 		return self.client.service.configurarMonedas(nombre, tipoVenta, tipoCambio, empresa)
+		
+	def crearAsientoXCuenta(self, empresa, asiento, cuenta, debe, montoLocal, montoSistema, montoExtranjero, moneda):
+		return self.client.service.crearAsientoXCuenta()
 	
 	##OBTIENE:
 	def getEmpresas(self):
