@@ -46,6 +46,9 @@ class WebClient:
 	
 	##CRUD:
 	###Crear:
+	def anularAsiento(self, codigo, empresa):
+		return self.client.service.anularAsiento(codigo, empresa)
+		
 	def crearEmpresa(self, nombre, cedula, logotipo, pais, tel, fax):
 		return self.client.service.crearEmpresa(nombre, cedula, logotipo, pais, tel, fax)
 	
