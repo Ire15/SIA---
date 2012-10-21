@@ -48,7 +48,7 @@ class TestService(object):
 	#Funcion Login
 	@ladonize(unicode,unicode,unicode,rtype=bool)
 	def checkLogin(self, empresa, user, password):
-		db = _mysql.connect('localhost', 'root', 'sebasftw', 'SIA_DB')
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', 'SIA_DB')
 		db.query("select idUsuario from Usuario inner join Empresa on Usuario.idEmpresa=Empresa.idEmpresa where Usuario.nombre = '"+user+"' and Usuario.pass = '"+password+"' and Empresa.nombre = '"+empresa+"'")
 		result=db.store_result()
 		if not result.fetch_row():
@@ -60,7 +60,7 @@ class TestService(object):
 	#Retornar todas las cuentas
 	@ladonize(unicode, rtype=[str])
 	def getCuentas(self, empresa):
-		db = _mysql.connect('localhost', 'root', 'sebasftw', empresa)
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', empresa)
 		db.query("select codigo from Cuenta")
 		result=db.store_result()
 		nombres = []
@@ -73,7 +73,7 @@ class TestService(object):
 	#Funcion obtener las cuentas getCuentasNoTitulo(self, empresa)		
 	@ladonize(unicode, rtype=[unicode])
 	def getCuentasNoTitulo(self, empresa):
-		db = _mysql.connect('localhost', 'root', 'sebasftw', empresa)
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', empresa)
 		db.query("select codigo, nombre from Cuenta where titulo = 0")
 		result=db.store_result()
 		nombres = []
@@ -86,23 +86,25 @@ class TestService(object):
 		return nombres
 	
 	#Obtener todos los periodos contables
-	@ladonize(unicode, rtype=[str])
+	@ladonize(unicode, rtype=[unicode])
 	def getPeriodos(self, empresa):
-		db = _mysql.connect('localhost', 'root', 'sebasftw', empresa)
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', empresa)
 		db.query("select idPeriodoContable, inicioContable, finContable from PeriodoContable")
 		result = db.store_result()
 		nombres = []
 		item = result.fetch_row()
 		while(item):
-			nombres += item[0]
+			elem[0] = item[0]
+			elem[1] = item[1]
+			elem[2] = item[2]
+			nombres += elem
 			item = result.fetch_row()
-		db.close()
 		return nombres
 	
 	#Obtener el estado de un periodo contable
 	@ladonize(int, unicode, rtype=unicode)
 	def getEstadoPeriodo(self, idCuenta, empresa):
-		db = _mysql.connect('localhost', 'root', 'sebasftw', empresa)
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', empresa)
 		db.query("select Estado.nombre from PeriodoContable inner join Estado on PeriodoContable.idEstado = Estado.idEstado where idPeriodoContable = "+idCuenta)
 		result = db.store_result()
 		item = result.fetch_row()
@@ -112,7 +114,7 @@ class TestService(object):
 	#Obtener el nombre de una cuenta recibiendo el codigo
 	@ladonize(unicode, unicode, rtype=str)
 	def getNombreCuenta(self, codigo, empresa):
-		db = _mysql.connect('localhost', 'root', 'sebasftw', empresa)
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', empresa)
 		db.query("select nombre from Cuenta where codigo = '"+ codigo+"'")
 		result = db.store_result()
 		item = result.fetch_row()
@@ -123,7 +125,7 @@ class TestService(object):
 	#Retornar nombres de las empresas
 	@ladonize(rtype=[str])
 	def getEmpresas(self):
-		db = _mysql.connect('localhost', 'root', 'sebasftw', 'SIA_DB')
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', 'SIA_DB')
 		db.query("select nombre from Empresa")
 		result=db.store_result()
 		nombres = []
@@ -137,7 +139,7 @@ class TestService(object):
 	#Obtener la cedula juridica de una empresa
 	@ladonize(unicode,rtype=str)
 	def getCedJuridica(self, empresa):
-		db = _mysql.connect('localhost', 'root', 'sebasftw', 'SIA_DB')
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', 'SIA_DB')
 		db.query("select cedula_juridica from Empresa where Empresa.nombre = '"+empresa+"'")
 		result=db.store_result()
 		row = result.fetch_row()
@@ -152,7 +154,8 @@ class TestService(object):
 	#Crear Usuario: crearUsuario(nombre password empresa) -> bool
 	@ladonize(unicode,unicode,unicode,rtype=str)
 	def crearUsuario(self, username, password, empresa):
-		db = _mysql.connect('localhost', 'root', 'sebasftw', 'SIA_DB')
+		print("Crear usuario \n");
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', 'SIA_DB')
 		db.query("select * from Usuario inner join Empresa on Usuario.idEmpresa = Empresa.idEmpresa where Usuario.nombre = '"+username+"' and Empresa.nombre='"+empresa+"'")
 		result = db.store_result()
 		if not result.fetch_row():
@@ -170,9 +173,10 @@ class TestService(object):
 			return "Usuario ya existe"
 			
 	def crearUsuarioAux(self, username, password, empresa):
-		db = _mysql.connect('localhost', 'root', 'sebasftw', 'SIA_DB')
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', 'SIA_DB')
 		db.query("select * from Usuario inner join Empresa on Usuario.idEmpresa = Empresa.idEmpresa where Usuario.nombre = '"+username+"' and Empresa.nombre='"+empresa+"'")
 		result = db.store_result()
+		
 		if not result.fetch_row():
 			db.query("call crearUsuario('"+username+"', '"+password+"', 'Administrador', '"+empresa+"')")
 			db.query("select * from Usuario inner join Empresa on Usuario.idEmpresa = Empresa.idEmpresa where Usuario.nombre = '"+username+"' and Empresa.nombre='"+empresa+"'")
@@ -190,7 +194,7 @@ class TestService(object):
 	#Crear nueva empresa
 	@ladonize(unicode, unicode, unicode, unicode, unicode, unicode, rtype=bool)	
 	def crearEmpresa(self, empresa, cedula, logotipo, pais, tel, fax): 
-		db = _mysql.connect('localhost', 'root', 'sebasftw', 'SIA_DB')
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', 'SIA_DB')
 		db.query("select * from Empresa where Empresa.nombre = '"+empresa+"'")
 		result = db.store_result()
 		if not result.fetch_row():
@@ -209,22 +213,26 @@ class TestService(object):
 				db.query("insert into Contacto (valor, idEmpresa, idTipoContacto) values"+paramsFax)
 				db.query("create database "+empresa)
 				db.close()
-				db = MySQLdb.connect(host='localhost',user='root',passwd='sebasftw',db=empresa)
+				db = MySQLdb.connect(host='localhost',user='root',passwd='jssdmr207',db=empresa)
+				# print "-("
 				cursor = db.cursor()
 				for line in open("scriptCuentasDB.sql"):
 					cursor.execute(line)
 				cursor.close()
-				print "base de empresa lista..."
+				# print "base de empresa lista"
 				cursor = db.cursor()
 				for line in open("initInsert.sql"):
 					cursor.execute(line)
 				cursor.close()
-				print "inserciones iniciales listas..."
+				# print "inserciones iniciales listas"
 				cursor = db.cursor()
+				print "inicia cursor"
 				for line in open("scriptSPCuentas.sql"):
 					cursor.execute(line)
 				cursor.close()
+				print "cierra cursor"
 				db.close()
+				print "cierra base de datos"
 				self.crearUsuarioAux('Administrador',md5("admin").hexdigest(),empresa)
 				return True
 		else:
@@ -232,9 +240,9 @@ class TestService(object):
 			return False
 			
 	#Agregar Cuenta (verificar jerarquia, 5 niveles):agregarCuenta(codigo, nombre, nombreExtra, titulo (bool), saldo (float)) -> bool
-	@ladonize(unicode, unicode, unicode, unicode, unicode, rtype=bool)
-	def crearCuenta(self, codigo, nombre, nombreExtra, titulo, empresa):
-		db = _mysql.connect('localhost', 'root', 'sebasftw', empresa)
+	@ladonize(unicode, unicode, unicode, unicode, unicode, unicode, rtype=bool)
+	def crearCuenta(self, codigo, nombre, nombreExtra, titulo, moneda, empresa):
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', empresa)
 		db.query("select * from Cuenta where codigo = '"+codigo+"'")
 		result = db.store_result()
 		if not result.fetch_row():
@@ -265,21 +273,23 @@ class TestService(object):
 	#Retornar monedas: getMonedas()-> lista de nombres			
 	@ladonize(unicode, rtype=[str])
 	def getMonedas(self, empresa):
-		db = _mysql.connect('localhost', 'root', 'sebasftw',empresa)
+		db = _mysql.connect('localhost', 'root', 'jssdmr207',empresa)
 		db.query("select Moneda.nombre, Moneda.codigo, TipoCambio.relacionCompra, TipoCambio.relacionVenta from Moneda inner join TipoCambio on TipoCambio.idMoneda = Moneda.idMoneda")
 		result=db.store_result()
 		nombres = []
 		item = result.fetch_row()
+		print item[0]
 		while(item):
 			nombres += item[0]
 			item = result.fetch_row()
 		db.close()
+		print nombres
 		return nombres
 	
 	#Retornar paises: getPaises()-> lista de nombres			
 	@ladonize(rtype=[str])
 	def getPaises(self):
-		db = _mysql.connect('localhost', 'root', 'sebasftw','SIA_DB')
+		db = _mysql.connect('localhost', 'root', 'jssdmr207','SIA_DB')
 		db.query("select nombre from Pais")
 		result=db.store_result()
 		nombres = []
@@ -291,7 +301,7 @@ class TestService(object):
 		return nombres
 		
 	def agregarTipoCambio(self, compra, venta, fecha, moneda, empresa):
-		db = _mysql.connect('localhost', 'root', 'sebasftw',empresa)
+		db = _mysql.connect('localhost', 'root', 'jssdmr207',empresa)
 		db.query("select * from TipoCambio innner join Moneda on TipoCambio.idMoneda = Moneda.idMoneda where Moneda.nombre = '"+moneda+"' AND fecha = '"+fecha+"')")
 		result = db.store_result()
 		if not result.fetch_row():
@@ -303,22 +313,19 @@ class TestService(object):
 			#Si es una primera insercion
 			
 	#Agregar Monedas: agregarMoneda(nombre, tipo de cambio compra:float, tipo de cambio venta:float, tipo moneda: int)-> bool
-	@ladonize(unicode, unicode, unicode, unicode, unicode, unicode, rtype=bool)
+	@ladonize(unicode, float, float, int, unicode, unicode, rtype=bool)
 	def crearMoneda(self, nombre, tipoDeCambioCompra, tipoDeCambioVenta, BCCR, tipoMoneda, empresa):
-		db = _mysql.connect('localhost', 'root', 'sebasftw',empresa)
+		db = _mysql.connect('localhost', 'root', 'jssdmr207',empresa)
 		db.query("select nombre from Moneda where nombre = '"+nombre+"'")
 		result = db.store_result()
 		if not result.fetch_row():
 			db.query("call crearMoneda('"+nombre+"','"+BCCR+"','"+tipoMoneda+"')")
 			if BCCR > 0:
 				Cliente = ClienteTipoCambio()
-				db.query("call crearTipoCambio ('"+Cliente.tipoCambioCompra()+"','"+Cliente.tipoCambioVenta()+"','2012-10-06','"+nombre+"')")
-				db.close()
-				return True
+				db.query("call crearTipoCambio ('"+Cliente.tipoCambioCompra()+"','"+Cliente.tipoCambioVenta()+"','")
 				#solicitar tipo cambio al webservice del BCCR
 			else:
-				db.query("call crearTipoCambio ('"+tipoDeCambioCompra+"','"+tipoDeCambioVenta+"','2012-10-06','"+nombre+"')")
-				return True
+				return False
 				#crear tipo cambio alambrado
 		else:
 			return False	
@@ -326,7 +333,7 @@ class TestService(object):
 	#Eliminar Cuenta: verificar q sea hoja en jerarquia: eliminarCuenta(codigo)-> bool
 	@ladonize(unicode, unicode, rtype=bool)
 	def eliminarCuenta(self, codigo, empresa):
-		db = _mysql.connect('localhost', 'root', 'sebasftw',empresa)
+		db = _mysql.connect('localhost', 'root', 'jssdmr207',empresa)
 		db.query("select nombre from Cuenta where codigo = '"+codigo+"'")
 		result = db.store_result()
 		if not result.fetch_row():
@@ -340,7 +347,7 @@ class TestService(object):
 	#Crear CuentaXMoneda
 	@ladonize(unicode, unicode, unicode, rtype = bool)
 	def crearCuentaXMoneda(self, cuenta, moneda, empresa):
-		db = _mysql.connect('localhost', 'root', 'sebasftw',empresa)
+		db = _mysql.connect('localhost', 'root', 'jssdmr207',empresa)
 		db.query("call crearCuentaXMoneda ('"+moneda+"','"+cuenta+"')")
 		db.query("select Moneda.nombre from CuentaXMoneda inner join Moneda on CuentaXMoneda.idMoneda = Moneda.idMoneda inner join Cuenta on CuentaXMoneda.idCuenta = Cuenta.idCuenta where Cuenta.nombre = '"+cuenta+"' and Moneda.nombre = '"+moneda+"'")
 		result = db.store_result()
@@ -353,7 +360,7 @@ class TestService(object):
 	#Eliminar Monedas: eliminarMoneda(nombre)-> bool
 	@ladonize(unicode, unicode, rtype=bool)
 	def eliminarMoneda(self, nombre, empresa):
-		db = _mysql.connect('localhost', 'root', 'sebasftw',empresa)
+		db = _mysql.connect('localhost', 'root', 'jssdmr207',empresa)
 		db.query("select nombre from Moneda where nombre = '"+nombre+"'")
 		result = db.store_result()
 		if not result.fetch_row():
@@ -367,9 +374,9 @@ class TestService(object):
 	#Modificar Monedas:
 	@ladonize(unicode, float, float, unicode, rtype=bool)
 	def modificarMoneda(self, nombre, venta, compra, empresa):
-		db = _mysql.connect('localhost', 'root', 'sebasftw',empresa)
-		db.query("update TipoCambio inner join Moneda on TipoCambio.idMoneda = Moneda.idMoneda set relacionCompra = '"+str(compra)+"', relacionVenta = '"+str(venta)+"' where Moneda.nombre = '"+nombre+"'")
-		db.query("select * from Moneda inner join TipoCambio on Moneda.idMoneda = TipoCambio.idMoneda where Moneda.nombre = '"+nombre+"' AND TipoCambio.relacionCompra = '"+str(compra)+"'")
+		db = _mysql.connect('localhost', 'root', 'jssdmr207',empresa)
+		db.query("update Moneda set relacionCompra = '"+compra+"', relacionVenta = '"+venta+"' where nombre = '"+nombre+"'")
+		db.query("select * from Moneda where nombre = '"+nombre+"' AND relacionCompra = '"+compra+"'")
 		result = db.store_result()
 		if not result.fetch_row():
 			db.close()
@@ -381,7 +388,7 @@ class TestService(object):
 	#Convertir monto a moneda del sistema	
 	@ladonize (unicode, float, unicode, rtype = float)
 	def convertirASistema(self, empresa, monto, monedaOrigen):
-		db = _mysql.connect('localhost', 'root', 'sebasftw', empresa)
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', empresa)
 		db.query("select TipoCambio.relacionVenta from TipoCambio inner join Moneda on TipoCambio.idTipoCambio = Moneda.idTipoCambio where Moneda.nombre = '"+monedaOrigen+"'")
 		result = db.store_result()
 		row = result.fetch_row()
@@ -412,7 +419,7 @@ class TestService(object):
 	def configurarMonedas(self, empresa, sistema, codSistema, local, codLocal, compra, venta):
 		hoy = datetime.date.today()
 		fecha = hoy.strftime("%Y-%m-%e")
-		db = _mysql.connect('localhost', 'root', 'sebasftw', empresa)
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', empresa)
 		db.query("call crearMoneda('%s', %i, 'Sistema', '%s')" %(sistema, 0, codSistema))
 		db.query("call crearMoneda('%s', %i, 'Local', '%s')" %(local, 0, codLocal))
 		db.query("select idMoneda from Moneda where nombre = '%s'" %(sistema))
@@ -427,9 +434,11 @@ class TestService(object):
 				db.close()
 				return True
 			else:
+				print "no -s"
 				db.close()
 				return False
 		else:
+			print "no -s"
 			db.close()
 			return False
 			
@@ -439,10 +448,10 @@ class TestService(object):
 	#Cierre Contable 
 	@ladonize (unicode, float, float, unicode, unicode, unicode, unicode, unicode, unicode, rtype= bool)
 	def cierreContableLikeABoss(self, empresa, dividendos, impuesto, ctaPyG, ctaUtilidades, ctaDividendos, ctaDividendosxPagar, ctaIR, ctaIRxPagar):
-		db = _mysql.connect('localhost', 'root', 'sebasftw', empresa)
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', empresa)
 		
 		#Obtener el monto de los gastos
-		db.query("select sum(saldo) from Cuenta where codigo like '6%' or codigo like '8%' or codigo like '5%'")
+		db.query("select sum(saldo) from Cuenta where codigo like '6%' or codigo like '8%' or codigo like '5'")
 		result = db.store_result()
 		row = result.fetch_row()
 		montoGastos = float(row[0]) 
@@ -481,7 +490,7 @@ class TestService(object):
 	#Crear asiento
 	@ladonize (unicode, unicode, unicode, rtype= int)
 	def crearAsiento(self, empresa, fechaCont, fechaDoc):
-		db = _mysql.connect('localhost', 'root', 'sebasftw', empresa)
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', empresa)
 		
 		#Crear asiento
 		db.query("call crearAsiento("+fechaCont+","+fechaDoc+", '','', 1)")
@@ -498,7 +507,7 @@ class TestService(object):
 	#Crea el movimiento de una cuenta asociado a un asiento contable	
 	@ladonize (unicode, int, unicode, int, float, float, float, unicode, rtype = int)
 	def crearAsientoxCuenta(self, empresa, asiento, cuenta, debe, montoLocal, montoSistema, montoExtranjero, moneda):
-		db = _mysql.connect('localhost', 'root', 'sebasftw', empresa)
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', empresa)
 		db.query("select idMoneda from Moneda where nombre = '"+moneda+"'")
 		result = db.store_result()
 		row = result.fetch_row()
@@ -521,7 +530,7 @@ class TestService(object):
 	#Crea el movimiento de una cuenta asociado a un asiento contable	
 	@ladonize (unicode, unicode, int, float, float, rtype = int)
 	def actualizarSaldoCuenta(self, empresa, cuenta, debe, montoSistema, montoLocal):
-		db = _mysql.connect('localhost', 'root', 'sebasftw', empresa)
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', empresa)
 		db.query("select saldoSistema, saldoLocal, codigo from Cuenta where nombre = '"+cuenta+"'")
 		result = db.store_result()
 		row = result.fetch_row()
@@ -548,24 +557,11 @@ class TestService(object):
 			
 	#Cierre Contable: cierreContableLikeABoss()
 	#Generar reporte: generarReporteLikeABoss(tipo:int balance de comprobacion, general, estado de resultados)->(algun xml?)
-	@ladonize(unicode, rtype=[str])
-	def genReportes(self, empresa):
-		db = _mysql.connect('localhost', 'root', 'sebasftw',empresa)
-		db.query("select idCuenta, nombre, saldoSistema from Cuenta where Titulo = 0")
-		result=db.store_result()
-		nombres = []
-		item = result.fetch_row()
-		while(item):
-			nombres += item[0]
-			item = result.fetch_row()
-		db.close()
-		return nombres
-		
 	#Crear PeriodoContable
 	
 	@ladonize(unicode, unicode, unicode, unicode, unicode, unicode, rtype=bool)
-	def crearPeriodoC (self, empresa, estado, anio, mes, fechaI, fechaF):	
-		db = _mysql.connect('localhost','root', 'sebasftw', empresa)
+	def crearPeriodoC (self, empresa, estado, anio, mes, fechaI, fechaF):
+		db = _mysql.connect('localhost','root', 'jssdmr207', empresa)
 		FechaInicio = str(anio)+"-"+str(mes)+"-"+str(fechaI)
 		mesO = 1
 		while(mesO <= 12):
@@ -590,7 +586,7 @@ class TestService(object):
 	
 	@ladonize(unicode, rtype=bool)
 	def generarBalance(self, empresa):	
-		db = _mysql.connect('localhost', 'root', 'sebasftw', 'SIA_DB')
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', 'SIA_DB')
 		db.query("select Cuentas.codigo, Cuenta.nombre, Cuenta.saldo, Cuenta.titulo from Cuenta order by Cuenta.codigo where Empresa.nombre = '"+empresa+"'")
 		result = db.store_result()
 		cuentas = []
@@ -605,7 +601,7 @@ class TestService(object):
 	
 	@ladonize(unicode, rtype=bool)
 	def estadoResultados(self, empresa):	
-		db = _mysql.connect('localhost', 'root', 'sebasftw', 'SIA_BB')
+		db = _mysql.connect('localhost', 'root', 'jssdmr207', 'SIA_BB')
 		db.query("select Cuenta.saldo, Cuenta.nombre, Cuenta.saldo from Cuenta order by Cuenta.codigo where Cuenta.codigo > 4 and Empresa.nombre = '"+empresa+"'")
 		result = db.store_result()
 		cuentas = []

@@ -120,3 +120,7 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+insert into TipoContacto(nombre) values('Fax');
+insert into TipoContacto(nombre) values('Telefono');
+insert into TipoUsuario(nombre) values('Administrador');

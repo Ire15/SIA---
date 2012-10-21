@@ -2,7 +2,7 @@ DROP PROCEDURE IF EXISTS `crearTipoContacto`;
 create procedure crearTipoContacto(IN pNombre varchar(45))
 begin
 declare tipoContactoEncontrado int;
-select idTipoContacto from TipoContacto where nombre = pNombre into idtipoContactoEncontrado;
+select idTipoContacto from TipoContacto where nombre = pNombre into tipoContactoEncontrado;
 if(tipoContactoEncontrado is null) then
 begin
 insert into TipoContacto (nombre) values (pNombre); 
