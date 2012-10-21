@@ -24,6 +24,7 @@
 
 from gi.repository import Gtk
 from AgregarCuentasController import *
+from Error import *
 import datetime
 
 class CrearAsientoController:
@@ -43,23 +44,31 @@ class CrearAsientoController:
 		self.client = webClient
 		self.empresa = empresa
 		self.listaCuentas = []
-		self.listaTreeview = Gtk.ListStore(str, float, float, float, float, float, float)
-		#self.listaCuentas.append(["Activos", None, float(30000)])
+		self.listaTreeview = Gtk.ListStore(str, float, float, float, float, float, float, str)
 		self.inicializarTreeView()
 		
 		
 	def terminarAsiento(self, button):
 		fecha = self.fecha.get_text()
-		fechaDoc = self.fechaDoc.get_text()
-		codDoc = self.codDoc.get_text()  
-		listaCuentas = ('a','b','c','d','e')
-		self.client.getCrearAsiento(fecha, fechaDoc, codDoc, listaCuentas)
+		fechaDoc = self.fechaDoc.get_text() 
+		asiento = self.client.crearAsiento(self.empresa, fecha, fechaDoc)
+		temp1 = 0
+		temp2 = 0
+		for i in self.listaCuentas:
+			temp1 += i[1]
+			temp2 += i[2]
+		if temp1 != temp2:
+			startErrorController("Error los saldos no cierran")
+		for i in self.listaCuentas:
+			if i[1] == 0.0:
+				self.client.crearAsientoXCuenta(self.empresa, asiento, i[0], 0, i[2], i[4], i[6], i[7])
+			else:
+				self.client.crearAsientoXCuenta(self.empresa, asiento, i[0], 0, i[1], i[3], i[5], i[7])
 		
 	def crearAsiento(self, button):
 		self.Window.set_visible(False)
 		startAgregarCuentasController(self.client, self.empresa, self.listaCuentas)
-		for i in self.listaCuentas:
-			self.listaTreeview.append(i)
+		self.listaTreeview.append(self.listaCuentas[-1])
 		self.vista.show()
 		self.Window.set_visible(True)
 	
@@ -77,6 +86,7 @@ class CrearAsientoController:
 		columna5 = Gtk.TreeViewColumn("Haber Sistema",render,text=4)
 		columna6 = Gtk.TreeViewColumn("Debe Extranjero",render,text=5)
 		columna7 = Gtk.TreeViewColumn("Haber Extranjero",render,text=6)
+		columna8 = Gtk.TreeViewColumn("Moneda",render,text=7)
 		self.vista.set_model(self.listaTreeview)
 		self.vista.append_column(columna)
 		self.vista.append_column(columna2)
@@ -85,6 +95,7 @@ class CrearAsientoController:
 		self.vista.append_column(columna5)
 		self.vista.append_column(columna6)
 		self.vista.append_column(columna7)
+		self.vista.append_column(columna8)
 		self.vista.show()
 		
 	
