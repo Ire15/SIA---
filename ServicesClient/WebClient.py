@@ -74,7 +74,7 @@ class WebClient:
 		return self.client.service.configurarMonedas(nombre, tipoVenta, tipoCambio, empresa)
 		
 	def crearAsientoXCuenta(self, empresa, asiento, cuenta, debe, montoLocal, montoSistema, montoExtranjero, moneda):
-		return self.client.service.crearAsientoXCuenta()
+		return self.client.service.crearAsientoxCuenta(empresa, asiento, cuenta, debe, montoLocal, montoSistema, montoExtranjero, moneda)
 	
 	##OBTIENE:
 	def getEmpresas(self):

@@ -24,6 +24,7 @@
 
 from gi.repository import Gtk
 from AgregarCuentasController import *
+from Error import *
 import datetime
 
 class CrearAsientoController:
@@ -50,15 +51,24 @@ class CrearAsientoController:
 	def terminarAsiento(self, button):
 		fecha = self.fecha.get_text()
 		fechaDoc = self.fechaDoc.get_text() 
-		self.client.crearAsiento(self.empresa, fecha, fechaDoc)
+		asiento = self.client.crearAsiento(self.empresa, fecha, fechaDoc)
+		temp1 = 0
+		temp2 = 0
 		for i in self.listaCuentas:
-			
+			temp1 += i[1]
+			temp2 += i[2]
+		if temp1 != temp2:
+			startErrorController("Error los saldos no cierran")
+		for i in self.listaCuentas:
+			if i[1] == 0.0:
+				self.client.crearAsientoXCuenta(self.empresa, asiento, i[0], 0, i[2], i[4], i[6], i[7])
+			else:
+				self.client.crearAsientoXCuenta(self.empresa, asiento, i[0], 0, i[1], i[3], i[5], i[7])
 		
 	def crearAsiento(self, button):
 		self.Window.set_visible(False)
 		startAgregarCuentasController(self.client, self.empresa, self.listaCuentas)
-		for i in self.listaCuentas:
-			self.listaTreeview.append(i)
+		self.listaTreeview.append(self.listaCuentas[-1])
 		self.vista.show()
 		self.Window.set_visible(True)
 	
