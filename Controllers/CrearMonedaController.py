@@ -28,24 +28,29 @@ from Error import *
 class CrearMonedaController:
 	def __init__(self, webClient, empresa):
 		gui = Gtk.Builder()
-		gui.add_from_file("../GUI/CrearCuenta.glade")
+		gui.add_from_file("../GUI/CrearMoneda.glade")
 		events = { "on_botAceptar_clicked": self.crearMoneda,
 			"on_CrearMoneda_delete_event": Gtk.main_quit,
 			
 		}
 		gui.connect_signals(events)
-		self.Window = gui.get_object("CrearMoneda")
+		print "eventos conectados\n"
+		self.Window = gui.get_object("MonedaSistLocal")
 		self.Window.set_title("Crear moneda")
+		print "ventana lista\n"
 		self.nombre = gui.get_object('getNombre')
 		self.codigo = gui.get_object('getCodigo')
 		self.tVenta = gui.get_object('getVenta')
 		self.tCompra = gui.get_object('getCompra')
 		self.BCCR = gui.get_object('bccr')
+		print "interfaz lista\n"
 		self.empresa = empresa
+		print "...\n"
 		self.client = webClient
+		print "variables listas\n"
 		
 		
-	def crearMonedas(self, button):
+	def crearMoneda(self, button):
 		nombre = self.nombre.get_text()
 		codigo = self.codigo.get_text()
 		tVenta = self.tVenta.get_text()

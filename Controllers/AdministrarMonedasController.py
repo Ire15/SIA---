@@ -1,4 +1,5 @@
 from gi.repository import Gtk
+from CrearMonedaController import *
 
 class AdministrarMonedasController:
 	def __init__(self, webClient, empresa):
@@ -28,14 +29,14 @@ class AdministrarMonedasController:
 		self.inicializarTreeView()
 		
 	def on_botAgregar_clicked(self, button):
-		self.Window.show(False)
-		startCrearMonedaController(self.cliente, self.empresa)
-		self.Window.show(True)
+		self.Window.hide()
+		startCrearMonedaController(self.client, self.empresa)
+		self.Window.show()
 		
 	def on_botModificar_clicked(self, button):
-		self.Window.show(False)
-		startMonedasController(self.cliente, self.empresa)
-		self.Window.show(True)
+		self.Window.hide()
+		startMonedasController(self.client, self.empresa)
+		self.Window.show()
 		
 	def inicializarTreeView(self):		
 		render = Gtk.CellRendererText()

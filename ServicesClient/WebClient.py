@@ -33,7 +33,7 @@ from BalanceGeneral import*
 
 class WebClient:
 	def __init__(self):
-		self.url = "http://khal-el.local:8080/TestService/soap/description"
+		self.url = "http://192.168.0.105:8080/TestService/soap/description"
 		self.client = suds.client.Client(self.url, cache=None)
 	
 	##PRUEBAS:
@@ -61,8 +61,8 @@ class WebClient:
 	def crearCuentaXMoneda(self, cuenta, moneda, empresa):
 		return self.client.service.crearCuentaXMoneda(cuenta, moneda, empresa)
 	
-	def crearAsiento(self, empresa, fechaCont, fechaDoc):
-		return self.client.service.crearAsiento(empresa, fechaCont, fechaDoc)
+	def crearAsiento(self, nuevoAsiento):
+		return self.client.service.crearAsiento(nuevoAsiento)
 	
 	def crearPeriodoC(self, empresa, estado, anio, mes, fechaI, fechaF):
 		return self.client.service.crearPeriodoC(empresa, estado, anio, mes, fechaI, fechaF)
@@ -70,11 +70,8 @@ class WebClient:
 	def crearMonedas(self, nombre, tipoCambioV, tipoCambioC, bccr, tipoMoneda, empresa):
 		return self.client.service.crearMoneda(nombre, tipoCambioC, tipoCambioV, bccr, tipoMoneda, empresa)
 		
-	def configurarMonedas(self, nombre, tipoVenta, tipoCambio, empresa):
-		return self.client.service.configurarMonedas(nombre, tipoVenta, tipoCambio, empresa)
-		
-	def crearAsientoXCuenta(self, empresa, asiento, cuenta, debe, montoLocal, montoSistema, montoExtranjero, moneda):
-		return self.client.service.crearAsientoxCuenta(empresa, asiento, cuenta, debe, montoLocal, montoSistema, montoExtranjero, moneda)
+	def configurarMonedas(self, empresa, sistema, codS, local, codL, compra, venta):
+		return self.client.service.configurarMonedas(empresa, sistema, codS, local, codL, compra, venta)
 	
 	##OBTIENE:
 	def getEmpresas(self):
